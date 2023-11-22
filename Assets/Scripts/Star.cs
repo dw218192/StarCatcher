@@ -4,11 +4,28 @@ using UnityEngine;
 
 public class Star : MonoBehaviour
 {
+    public float fallForce = 2.0f;
+    Rigidbody rigidbody;
+
+    void Start()
+    {
+        rigidbody = GetComponent<Rigidbody>();
+    }
+
+    void FixedUpdate()
+    {
+        rigidbody.AddForce(Vector3.down * fallForce);
+    }
+
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Sword")
+        if (collision.gameObject.CompareTag(Consts.TAG_SWORD))
         {
-            Debug.Log("Star collision with Sword");
+            GameMgr.instance.Score += 1;
+            Destroy(gameObject);
+        }
+        else if (collision.gameObject.CompareTag(Consts.TAG_GROUND))
+        {
             Destroy(gameObject);
         }
     }

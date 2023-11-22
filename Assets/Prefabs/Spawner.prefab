@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3617685875067831371
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3454276939507813910}
+  - component: {fileID: 4133359270967726247}
+  m_Layer: 0
+  m_Name: Spawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3454276939507813910
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3617685875067831371}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -113.56824, y: 52.33, z: 15.57}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4133359270967726247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3617685875067831371}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 491fb22f249c0b948b85a214da921db8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabs:
+  - {fileID: 2386480845860604739, guid: bf3902bc505e239409e3cb907be666e4, type: 3}
+  planeSize: 10
+  spawnPoints:
+  - {x: 2.5580225, y: 0, z: -4.800292}
+  - {x: 2.2175798, y: 0, z: -0.7035165}
+  - {x: 2.603198, y: 0, z: 2.3920286}
+  - {x: -0.061554432, y: 0, z: -3.4605064}
+  - {x: 4.3250885, y: 0, z: 4.757414}
+  - {x: 3.8387372, y: 0, z: 1.0418291}
+  - {x: 2.622335, y: 0, z: 4.1074333}
+  - {x: -0.251997, y: 0, z: 4.2632856}
+  - {x: -1.3921337, y: 0, z: 2.8696108}
+  - {x: 0.15324545, y: 0, z: -0.59361506}
+  - {x: -0.8531947, y: 0, z: -4.91455}
+  - {x: 4.503498, y: 0, z: -0.9448261}
+  - {x: 2.0699453, y: 0, z: 0.989521}
+  - {x: -4.396389, y: 0, z: -4.4000196}
+  - {x: -3.3418295, y: 0, z: 1.6523265}
+  - {x: -4.9929895, y: 0, z: 3.0021534}
+  - {x: 3.1221092, y: 0, z: -3.0737448}
+  - {x: -1.4629526, y: 0, z: -3.417261}
+  - {x: 0.2840562, y: 0, z: -2.4654336}
+  - {x: -3.9258766, y: 0, z: -0.105054855}
+  numberOfPoints: 20
+  minSeparation: 1

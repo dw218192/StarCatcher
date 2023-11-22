@@ -6,18 +6,32 @@ using UnityEngine.UI;
 public class LogHelper : MonoBehaviour
 {
     public Text logText;
+    public Text scoreText;
+#if UNITY_EDITOR
+    bool debugMode = true;
+#else
+    bool debugMode = false;
+#endif
+
+    static public LogHelper instance = null;
+    private void Awake()
+    {
+        if (instance != null)
+            Destroy(gameObject);
+        else {
+            instance = this;
+            if(debugMode)
+                Application.logMessageReceived += HandleLog;
+        }
+    }
 
     uint qsize = 15;  // number of messages to keep
     Queue myLogQueue = new();
 
-    private void Awake()
-    {
-        DontDestroyOnLoad(gameObject);
-        Application.logMessageReceived += HandleLog;
-    }
     private void OnDestroy()
     {
-        Application.logMessageReceived -= HandleLog;
+        if (debugMode)
+            Application.logMessageReceived -= HandleLog;
     }
     void HandleLog(string logString, string stackTrace, LogType type)
     {
@@ -36,6 +50,11 @@ public class LogHelper : MonoBehaviour
                 logText.color = Color.white;
             logText.text = string.Join("\n", myLogQueue.ToArray());
         }
+    }
 
+    public void SetScore(int score)
+    {
+        if (scoreText != null)
+            scoreText.text = $"Score: {score}";
     }
 }
