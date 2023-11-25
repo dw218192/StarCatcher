@@ -7,6 +7,9 @@ public class LogHelper : MonoBehaviour
 {
     public Text logText;
     public Text scoreText;
+    public Text timeLeftText;
+    public Text gameOverText;
+
 #if UNITY_EDITOR
     bool debugMode = true;
 #else
@@ -54,7 +57,17 @@ public class LogHelper : MonoBehaviour
 
     public void SetScore(int score)
     {
-        if (scoreText != null)
-            scoreText.text = $"Score: {score}";
+        scoreText.text = $"Score: {score}";
+    }
+
+    public void SetTimeLeft(float timeLeft)
+    {
+        timeLeft = Mathf.Max(0, timeLeft);
+        timeLeftText.text = $"Time Left: {timeLeft:F1}";
+    }
+
+    public void SetGameOver(int score)
+    {
+        gameOverText.text = $"Game Over!\nYour score: {score}";
     }
 }
