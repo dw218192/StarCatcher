@@ -45,7 +45,9 @@ public class GameMgr : MonoBehaviour
 
     void GameOver() {
         IEnumerator GameOverCoroutine() {
+            Time.timeScale = 0.0f;
             LogHelper.instance.SetGameOver(Score);
+            
             yield return new WaitForSeconds(5.0f);
             SceneManager.LoadScene(0);
         }

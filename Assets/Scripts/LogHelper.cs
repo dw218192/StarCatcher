@@ -23,6 +23,7 @@ public class LogHelper : MonoBehaviour
             Destroy(gameObject);
         else {
             instance = this;
+            gameOverText.gameObject.SetActive(false);
             if(debugMode)
                 Application.logMessageReceived += HandleLog;
         }
@@ -68,6 +69,7 @@ public class LogHelper : MonoBehaviour
 
     public void SetGameOver(int score)
     {
+        gameOverText.gameObject.SetActive(true);
         gameOverText.text = $"Game Over!\nYour score: {score}";
     }
 }
