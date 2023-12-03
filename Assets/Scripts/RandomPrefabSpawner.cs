@@ -12,12 +12,27 @@ public class RandomPrefabSpawner : MonoBehaviour
     public float minSeparation = 2f;
     public float spawnInterval = 1f;
     public int maxSimultaneous = 5;
+    public Vector3 oscillation = new Vector3(2.0f, 1.5f, 0.0f);
+
+    bool _shouldSpawn = false;
+    public bool shouldSpawn { 
+        get => _shouldSpawn;
+        set {
+            _shouldSpawn = value;
+            spawnTimer = 0f;
+            regenerateTimer = 0f;
+        }
+    }
+
     float spawnTimer = 0f;
     float regenerateTimer = 0f;
+
+    Vector3 basePosition;
 
     void Awake()
     {
         GenerateSpawnPoints();
+        basePosition = transform.position;
     }
 
     public void GenerateSpawnPoints()
@@ -48,6 +63,14 @@ public class RandomPrefabSpawner : MonoBehaviour
 
     void Update()
     {
+        if (!shouldSpawn) return;
+
+        transform.position = basePosition + new Vector3(
+            Mathf.Lerp(-oscillation.x, oscillation.x, Mathf.PingPong(Time.time, 1)),
+            Mathf.Lerp(-oscillation.y, oscillation.y, Mathf.PingPong(Time.time, 1)),
+            Mathf.Lerp(-oscillation.z, oscillation.z, Mathf.PingPong(Time.time, 1))
+        );
+
         spawnTimer += Time.deltaTime;
         regenerateTimer += Time.deltaTime;
         

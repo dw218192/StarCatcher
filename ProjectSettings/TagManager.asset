@@ -6,11 +6,14 @@ TagManager:
   tags:
   - Sword
   - Ground
+  - Meteor
+  - Sheild
+  - WebDemoController
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Ground
   - Water
   - UI
   - 

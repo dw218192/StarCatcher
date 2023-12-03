@@ -9,7 +9,7 @@ public class LogHelper : MonoBehaviour
     public Text scoreText;
     public Text timeLeftText;
     public Text gameOverText;
-
+    
 #if UNITY_EDITOR
     bool debugMode = true;
 #else
@@ -71,5 +71,12 @@ public class LogHelper : MonoBehaviour
     {
         gameOverText.gameObject.SetActive(true);
         gameOverText.text = $"Game Over!\nYour score: {score}";
+    }
+    public void SetLoadingProgress(float progress)
+    {
+        gameOverText.text = $"Restarting...: {progress * 100:F1}%";
+        if (progress >= 1.0f) {
+            gameOverText.gameObject.SetActive(false);
+        }
     }
 }

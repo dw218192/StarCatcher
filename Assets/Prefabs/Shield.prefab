@@ -178,7 +178,7 @@ GameObject:
   - component: {fileID: 3326772142971820008}
   m_Layer: 0
   m_Name: Collider
-  m_TagString: Untagged
+  m_TagString: Sheild
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -311,6 +311,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5285064784216696124}
+  - component: {fileID: 359996876730811199}
   m_Layer: 0
   m_Name: Shield
   m_TagString: Untagged
@@ -335,6 +336,21 @@ Transform:
   - {fileID: 9033245115663776391}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &359996876730811199
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8925284987585687052}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4dba832927913849b93c4464b8d3e76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 0}
+  localPosition: {x: 0.055999756, y: 0.1949997, z: 0.26399994}
+  localRotation: {x: -0.4136158, y: -0.6821822, z: 0.60275024, w: -0.015544926}
 --- !u!1 &9031926605969263255
 GameObject:
   m_ObjectHideFlags: 0
