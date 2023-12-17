@@ -6,10 +6,9 @@ using UnityEngine.UI;
 
 public class GameMgr : MonoBehaviour
 {
+    public int MaxWaveCnt = 3;
     public float timeLimitSecs = 120.0f;
-    public Canvas startGameCanvas;
     public RandomPrefabSpawner[] spawners;
-    public StartGame startGameObj;
     public AudioClip gameBGM;
     public AudioSource audioSource;
     public float audioFadeSpeed = 0.3f;
@@ -19,26 +18,30 @@ public class GameMgr : MonoBehaviour
     public enum GameState {
         Start,
         Playing,
+        Intermission,
         GameOver
     }
     GameState _gameState = GameState.Start;
+
+    public event System.Action<GameState, GameState> OnGameStateChange;
+
     public GameState gameState {
         get => _gameState;
         set {
+            if (value != _gameState) {
+                OnGameStateChange?.Invoke(_gameState, value);
+            }
+
             if (value == GameState.Start) {
-                foreach (var spawner in spawners) {
-                    spawner.shouldSpawn = false;
-                }
+                StopBGM();
             } else if (value == GameState.Playing) {
                 StartBGM();
-                foreach (var spawner in spawners) {
-                    spawner.shouldSpawn = true;
-                }
+            } else if (value == GameState.Intermission) {
+                StopBGM();
+                Intermission();
             } else if (value == GameState.GameOver) {
                 StopBGM();
-                foreach (var spawner in spawners) {
-                    spawner.shouldSpawn = false;
-                }
+                GameOver();
             }
             _gameState = value;
         }
@@ -51,10 +54,34 @@ public class GameMgr : MonoBehaviour
         }
         set {
             score = value;
-            LogHelper.instance.SetScore(score);
+            GameCanvas.instance.SetScore(score);
         }
     }
     int score = 0;
+    public int Credit
+    {
+        get
+        {
+            return credit;
+        }
+        set
+        {
+            credit = value;
+            GameCanvas.instance.SetCredit(credit);
+        }
+    }
+    int credit = 0;
+    public float TimeLeftSecs
+    {
+        get => timeLeftSecs;
+        set
+        {
+            timeLeftSecs = value;
+            GameCanvas.instance.SetTimeLeft(timeLeftSecs);
+        }
+    }
+
+    public int WaveCnt { get; set; } = 0;
 
     void StartBGM() {
         if (audioSource.isPlaying)
@@ -97,66 +124,88 @@ public class GameMgr : MonoBehaviour
             instance = this;
     }
 
-    void Init() {
-        gameState = GameState.Start;
-        timeLeftSecs = timeLimitSecs;
-        Score = 0;
-        startGameCanvas.gameObject.SetActive(true);
-        LogHelper.instance.SetTimeLeft(timeLeftSecs);
-    }
-
     // Start is called before the first frame update
     void Start()
     {
-        Init();
-        startGameObj.OnClick += () => {
-            gameState = GameState.Playing;
-            startGameCanvas.gameObject.SetActive(false);
-        };
+        gameState = GameState.Start;
+        timeLeftSecs = timeLimitSecs;
+        Score = 0;
+        GameCanvas.instance.SetTimeLeft(timeLeftSecs);
+        GameCanvas.instance.SetTitle("Before the game starts...");
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (gameState == GameState.Start) {
-
-        } else if (gameState == GameState.Playing) {
+        if (gameState == GameState.Playing) {
             timeLeftSecs -= Time.deltaTime;
-            LogHelper.instance.SetTimeLeft(timeLeftSecs);
+            GameCanvas.instance.SetTimeLeft(timeLeftSecs);
             if (timeLeftSecs <= 0.0f) {
-                GameOver();
+                ++WaveCnt;
+                if (WaveCnt <= MaxWaveCnt)
+                {
+                    gameState = GameState.Intermission;
+                }
+                else
+                {
+                    gameState = GameState.GameOver;
+                }
             }
-        } else if (gameState == GameState.GameOver) {
-
         }
     }
+    bool Intermission_1 = false;
+    void Intermission()
+    {
+        TimeLeftSecs = timeLimitSecs;
+        Score = 0;
 
-    void GameOver() {
-        var logHelper = LogHelper.instance;
-        gameState = GameState.GameOver;
-
-        IEnumerator GameOverCoroutine() {
-            logHelper.SetGameOver(Score);
-            yield return new WaitForSecondsRealtime(3.0f);
-            yield return LoadSceneCoroutine();
-            // reset game state
-            Init();
-        }
-
-        IEnumerator LoadSceneCoroutine() {
+        IEnumerator _1()
+        {
+            Intermission_1 = true;
             float loadingTime = 3.0f;
             float t = 0.0f;
-            // jack, wtf is this? why is this fake loading?
-            // come to my office and explain yourself
-            while (t < loadingTime) {
+            while (t < loadingTime)
+            {
                 float progress = t / loadingTime;
-                logHelper.SetLoadingProgress(progress);
+                GameCanvas.instance.SetTitle($"Next Round Loading...{Mathf.FloorToInt(progress * 100)}%");
                 yield return new WaitForSecondsRealtime(0.1f);
                 t += 0.1f;
             }
-            logHelper.SetLoadingProgress(1.0f);
+            GameCanvas.instance.SetTitle($"Hit the Button When Ready!\nWave: {WaveCnt}/{MaxWaveCnt}\n" +
+                $"Score: {Score}\n" +
+                $"You may spend your credit in the shop now => ");
+            Intermission_1 = false;
         }
-        
-        StartCoroutine(GameOverCoroutine());
+        StartCoroutine(_1());
+    }
+
+    bool GameOver_0 = false;
+    void GameOver() {
+        var highScore = PlayerPrefs.GetInt("Score");
+        highScore = Mathf.Max(highScore, Score);
+        PlayerPrefs.SetInt("Score", highScore);
+
+        GameCanvas.instance.SetTitle($"Congrats! Game Over!\nScore{Score}\nHigh Score{highScore}");
+        TimeLeftSecs = timeLimitSecs;
+        Score = 0;
+        Credit = 0;
+
+        IEnumerator _0() {
+            GameOver_0 = true;
+            yield return new WaitForSecondsRealtime(10.0f);
+            gameState = GameState.Start;
+            GameOver_0 = false;
+        }
+        StartCoroutine(_0());
+    }
+
+    public void StartGame()
+    {
+        if (Intermission_1 || GameOver_0)
+            return;
+
+        if (gameState != GameState.Playing) {
+            gameState = GameState.Playing;
+        }
     }
 }

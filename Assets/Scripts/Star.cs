@@ -9,12 +9,13 @@ public class Star : MonoBehaviour
     public AudioClip scoringSound;
 
     public Collider collider;
-    public GameObject meshRenderer;
+    GameObject meshRenderer;
     Rigidbody rigidbody;
 
     void Start()
     {
         rigidbody = GetComponent<Rigidbody>();
+        meshRenderer = GetComponentInChildren<MeshRenderer>().gameObject;
     }
 
     void FixedUpdate()
@@ -26,17 +27,20 @@ public class Star : MonoBehaviour
         if (GameMgr.instance.gameState != GameMgr.GameState.Playing)
             Destroy(gameObject);
     }
-
+    public void Die()
+    {
+        GameMgr.instance.Score += 1;
+        scoringEffect.Play();
+        AudioSource.PlayClipAtPoint(scoringSound, transform.position);
+        collider.enabled = false;
+        meshRenderer.SetActive(false);
+        Destroy(gameObject, 0.5f);
+    }
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag(Consts.TAG_SWORD))
         {
-            GameMgr.instance.Score += 1;
-            scoringEffect.Play();
-            AudioSource.PlayClipAtPoint(scoringSound, transform.position);
-            collider.enabled = false;
-            meshRenderer.SetActive(false);
-            Destroy(gameObject, 0.5f);
+            Die();
         }
         else if (collision.gameObject.CompareTag(Consts.TAG_GROUND))
         {

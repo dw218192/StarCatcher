@@ -5,7 +5,6 @@ using System;
 
 public class MeteorScript : MonoBehaviour
 {
-    public int damage = 1;
     public float fallForce = 2.0f;
     public AudioClip hitSound;
     public ParticleSystem scoringEffect;
@@ -16,6 +15,8 @@ public class MeteorScript : MonoBehaviour
     Vector3 direction;
 
     bool isDeflected = false;
+    float deflectDeathTimer = 0.0f;
+
     void Start()
     {
         rigidbody = GetComponent<Rigidbody>();
@@ -28,6 +29,10 @@ public class MeteorScript : MonoBehaviour
     {
         if (isDeflected) {
             rigidbody.AddForce(Vector3.down * fallForce);
+            deflectDeathTimer += Time.deltaTime;
+            if (deflectDeathTimer > 2.0f) {
+                Destroy(gameObject);
+            }
         } else {
             rigidbody.AddForce(direction * fallForce);
         }
@@ -40,9 +45,11 @@ public class MeteorScript : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
+        if (isDeflected) {
+            return;
+        }
         if (collision.gameObject.CompareTag(Consts.TAG_SWORD) || collision.gameObject.CompareTag(Consts.TAG_PLAYER))
         {
-            GameMgr.instance.Score -= damage;
             GameMgr.instance.Score = Math.Clamp(GameMgr.instance.Score, 0, Int32.MaxValue);
             scoringEffect.Play();
             AudioSource.PlayClipAtPoint(hitSound, transform.position);
@@ -56,6 +63,7 @@ public class MeteorScript : MonoBehaviour
         }
         else if (collision.gameObject.CompareTag(Consts.TAG_SHEILD)) 
         {
+            ++ GameMgr.instance.Credit;
             isDeflected = true;
             rigidbody.AddForce(-rigidbody.velocity.normalized * 10.0f, ForceMode.Impulse);
         }

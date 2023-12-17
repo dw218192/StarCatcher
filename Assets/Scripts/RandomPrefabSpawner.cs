@@ -14,6 +14,9 @@ public class RandomPrefabSpawner : MonoBehaviour
     public int maxSimultaneous = 5;
     public Vector3 oscillation = new Vector3(2.0f, 1.5f, 0.0f);
 
+    public float spawnNumberIncrease = 1.2f;
+    public float spawnIntervalDecrease = 0.9f;
+
     bool _shouldSpawn = false;
     public bool shouldSpawn { 
         get => _shouldSpawn;
@@ -33,6 +36,28 @@ public class RandomPrefabSpawner : MonoBehaviour
     {
         GenerateSpawnPoints();
         basePosition = transform.position;
+    }
+
+    void Start(){
+        GameMgr.instance.OnGameStateChange += OnGameStateChange;
+    }
+
+    void OnGameStateChange(GameMgr.GameState oldState, GameMgr.GameState newState)
+    {
+        if (newState == GameMgr.GameState.Start)
+        {
+            shouldSpawn = false;
+        }
+        else if (newState == GameMgr.GameState.Playing)
+        {
+            shouldSpawn = true;
+        }
+        else if (newState == GameMgr.GameState.GameOver)
+        {
+            shouldSpawn = true;
+            spawnInterval *= spawnIntervalDecrease;
+            maxSimultaneous = (int)(maxSimultaneous * spawnNumberIncrease);
+        }
     }
 
     public void GenerateSpawnPoints()
@@ -57,7 +82,7 @@ public class RandomPrefabSpawner : MonoBehaviour
     {
         if (prefabs.Length == 0) return;
 
-        GameObject prefabToSpawn = prefabs[Random.Range(0, prefabs.Length)];
+        GameObject prefabToSpawn = prefabs[GameMgr.instance.WaveCnt % prefabs.Length];
         Instantiate(prefabToSpawn, transform.TransformPoint(point), Quaternion.identity);
     }
 

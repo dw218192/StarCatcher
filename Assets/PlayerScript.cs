@@ -4,16 +4,20 @@ using UnityEngine;
 
 public class PlayerScript : MonoBehaviour
 {
-    public GameObject camera;
-    public static PlayerScript instance;
-    public CapsuleCollider collider;
+    static public PlayerScript instance = null;
     public float desiredPlayerHeight = 1.7f;
     public GameObject cameraRig;
+    public GameObject centerEyeAnchor;
+
+    SphereCollider col;
 
     void Awake()
     {
         instance = this;
-        collider.height = desiredPlayerHeight;
+        transform.position = centerEyeAnchor.transform.position;
+    }
+
+    void Start() {
         float groundHeight = 0.0f;
         RaycastHit hit;
         if (Physics.Raycast(transform.position, Vector3.down, out hit, Mathf.Infinity, LayerMask.GetMask("Ground"))) {
@@ -21,13 +25,10 @@ public class PlayerScript : MonoBehaviour
         }
 
         float curHeight = cameraRig.transform.position.y - groundHeight;
-        float scaleY = curHeight / desiredPlayerHeight;
+        float scaleY = desiredPlayerHeight / curHeight;
         cameraRig.transform.localScale = new Vector3(1, scaleY, 1);
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        transform.position = camera.transform.position - new Vector3(0, desiredPlayerHeight / 2, 0);
+    void Update() {
+        transform.position = centerEyeAnchor.transform.position;
     }
 }
